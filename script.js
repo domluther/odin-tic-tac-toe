@@ -17,13 +17,107 @@ const gameBoard = (() => {
       }
     }
   };
+
+  // If the place is taken, reject the move - also works if out of bound as that is undefined
+  const addPiece = (x, y, mark) => {
+    if (gameboard[x][y] !== ' ') {
+      console.log('Space taken');
+      return false;
+    }
+
+    // Not taken? Mark the spot
+    gameboard[x][y] = mark;
+    return true;
+  };
+
+  // Check an individual line for a win
+  const checkLine = (line, mark) => {
+    const res = line
+      .map((coords) => gameboard[coords[0]][coords[1]] === mark)
+      .reduce((acc, cur) => (cur === true ? acc + 1 : acc), 0);
+
+    return res === 3;
+  };
+
+  // Check all
+  const checkBoardForWin = (mark) => {
+    // The 8 winning lines in noughts and crosses
+    const winningLines = [
+      [
+        [0, 0],
+        [0, 1],
+        [0, 2],
+      ],
+      [
+        [0, 0],
+        [1, 1],
+        [2, 2],
+      ],
+      [
+        [0, 0],
+        [1, 0],
+        [2, 0],
+      ],
+      [
+        [0, 1],
+        [1, 1],
+        [2, 1],
+      ],
+      [
+        [0, 2],
+        [1, 2],
+        [2, 2],
+      ],
+      [
+        [0, 2],
+        [1, 1],
+        [2, 0],
+      ],
+      [
+        [1, 0],
+        [1, 1],
+        [1, 2],
+      ],
+      [
+        [2, 0],
+        [2, 1],
+        [2, 2],
+      ],
+    ];
+
+    const results = winningLines
+      // Check each of the possible winning line combinations for a win
+      .map((line) => checkLine(line, mark))
+      // just keep the trues
+      .filter((value) => value === true);
+
+    // Are there any trues?
+    return results.length > 0;
+  };
+
+  // Init the board
   createBoard();
-  return { gameboard };
+  addPiece(2, 0, 'x');
+  addPiece(2, 1, 'x');
+  addPiece(2, 2, 'x');
+  checkBoardForWin('x');
+  return { gameboard, addPiece };
 })();
 
-console.log(gameBoard.gameboard);
+const displayController = () => {};
 
-const Player = (name, desiredCounter) => {
+const Player = (name, desiredMark) => {
   const playerName = name;
-  const counter = desiredCounter;
+  const mark = desiredMark;
 };
+
+/*
+Gameplay loop
+
+Set starting player
+while there's space available (not 9 moves?) & no one has won
+  ask player to move
+  place move if possible
+  check if they've won
+  swap player
+*/
