@@ -39,7 +39,8 @@ html {
 }
 
 .game-status {
-  font-size: 2.4rem;
+  font-size: 3.2rem;
+  padding: 1.2rem;
   text-align: center;
 }
 
@@ -63,9 +64,35 @@ html {
   padding: 2rem;
 }
 
-.restart-btn {
+button {
   font-size: 4rem;
   padding: 1rem;
   color: var(--tekhelet);
   background-color: var(--thistle);
+}
+
+.game-settings {
+  font-size: 2.4rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  padding: 1rem;
+  justify-items: center;
+}
+
+input {
+  font-size: 2.4rem;
+  padding: 0 1rem;
+  width: 80%;
+  justify-self: start;
+}
+
+.submitFormButton {
+  grid-column: span 2;
+  justify-self: center;
+  padding: 0.5rem 3rem;
+}
+
+.hidden {
+  display: none;
 }

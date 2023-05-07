@@ -11,9 +11,30 @@
   <body>
     <div class="container">
       <div class="title">Noughts & Crosses</div>
-      <div class="game-content"></div>
-      <div class="game-status"></div>
-      <div class="game-controls">
+
+      <div class="game-content hidden"></div>
+      <div class="game-status hidden"></div>
+      <form action="" class="game-settings">
+        <label for="player1Name">Player 1: </label
+        ><input
+          type="text"
+          name="player1Name"
+          id="player1Name"
+          placeholder="Bob"
+          maxlength="15"
+        />
+        <label for="player2Name">Player 2: </label
+        ><input
+          type="text"
+          name="player2Name"
+          id="player2Name"
+          placeholder="Sponge"
+          maxlength="15"
+        />
+
+        <button type="submit" class="submitFormButton">Start</button>
+      </form>
+      <div class="game-controls hidden">
         <button class="restart-btn">Restart</button>
       </div>
     </div>

@@ -2,6 +2,8 @@
 // in a module as only one will be needed
 const gameContentEle = document.querySelector('.game-content');
 const restartBtn = document.querySelector('.restart-btn');
+const submitFormBtn = document.querySelector('.submitFormButton');
+const settingsForm = document.querySelector('.game-settings');
 
 const gameBoard = (() => {
   const gameboard = [];
@@ -149,6 +151,7 @@ const gameController = (() => {
   const maxMoves = 9;
   let activePlayerId;
   let activePlayer;
+  let playerPointer;
   let won;
 
   const updateStatus = (message) => {
@@ -171,10 +174,14 @@ const gameController = (() => {
       if (!won) {
         activePlayerId = activePlayerId === 1 ? 0 : 1;
         activePlayer = players[activePlayerId];
+        playerPointer = activePlayerId === 0 ? '<<' : '>>';
+
         moves += 1;
         // Is it game over? (board full)
         if (moves < maxMoves) {
-          updateStatus(`${activePlayer.playerName}'s turn`);
+          updateStatus(
+            `${players[0].playerName} ${playerPointer} ${players[1].playerName}`
+          );
         } else {
           updateStatus('A draw');
         }
@@ -192,8 +199,11 @@ const gameController = (() => {
     won = false;
     activePlayerId = 0;
     activePlayer = players[activePlayerId];
+    playerPointer = activePlayerId === 0 ? '<<' : '>>';
     gameContentEle.addEventListener('click', tryToMove);
-    updateStatus(`${activePlayer.playerName}'s turn`);
+    updateStatus(
+      `${players[0].playerName} ${playerPointer} ${players[1].playerName}`
+    );
   };
   return { start };
 })();
@@ -205,5 +215,17 @@ const init = () => {
 };
 
 restartBtn.addEventListener('click', init);
+submitFormBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  // Toggle visibility of elements
+  document.querySelector('.game-content').classList.remove('hidden');
+  document.querySelector('.game-status').classList.remove('hidden');
+  document.querySelector('.game-controls').classList.remove('hidden');
+  document.querySelector('.game-settings').classList.add('hidden');
 
-init();
+  // Read in names
+
+  // Create player objects
+
+  init();
+});
