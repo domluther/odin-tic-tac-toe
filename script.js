@@ -2,11 +2,10 @@
 // in a module as only one will be needed
 const gameContentEle = document.querySelector('.game-content');
 const restartBtn = document.querySelector('.restart-btn');
-const submitFormBtn = document.querySelector('.submitFormButton');
 const settingsForm = document.querySelector('.game-settings');
 
 const gameBoard = (() => {
-  const gameboard = [];
+  let gameboard = [];
 
   const getBoard = () => gameboard;
 
@@ -28,9 +27,7 @@ const gameBoard = (() => {
   };
 
   const resetBoard = () => {
-    gameboard.pop();
-    gameboard.pop();
-    gameboard.pop();
+    gameboard = [];
     createBoard();
   };
 
@@ -143,7 +140,7 @@ const Player = (name, desiredMark) => {
   return { playerName, mark };
 };
 
-const players = [Player('Bob', 'x'), Player('Sponge', 'o')];
+let players = [];
 
 const gameController = (() => {
   // State variables needed for the game
@@ -214,8 +211,11 @@ const init = () => {
   gameController.start();
 };
 
-restartBtn.addEventListener('click', init);
-submitFormBtn.addEventListener('click', (e) => {
+restartBtn.addEventListener('click', () => {
+  document.querySelector('.game-controls').classList.add('hidden');
+  document.querySelector('.game-settings').classList.remove('hidden');
+});
+settingsForm.addEventListener('submit', (e) => {
   e.preventDefault();
   // Toggle visibility of elements
   document.querySelector('.game-content').classList.remove('hidden');
@@ -224,8 +224,10 @@ submitFormBtn.addEventListener('click', (e) => {
   document.querySelector('.game-settings').classList.add('hidden');
 
   // Read in names
+  const player1Name = document.querySelector('#player1Name').value;
+  const player2Name = document.querySelector('#player2Name').value;
 
   // Create player objects
-
+  players = [Player(player1Name, 'O'), Player(player2Name, 'X')];
   init();
 });
