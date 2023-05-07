@@ -152,9 +152,9 @@ const gameBoard = (() => {
     return false;
   };
 
+  // Finds a potential line of interest - one with 2 marks of the same type
   const checkBoardForPotentialWin = (mark) => {
     const lineOfInterest = checkBoardForWin(mark, 2);
-    console.log(lineOfInterest);
     return lineOfInterest;
   };
 
@@ -204,6 +204,7 @@ const gameController = (() => {
   const randomFromList = (items) =>
     items[Math.floor(Math.random() * items.length)];
 
+  // Put a counter in a random position
   const randomMove = () => {
     let validMove = false;
     while (!validMove) {
@@ -211,7 +212,6 @@ const gameController = (() => {
         Math.floor(Math.random() * 3),
         Math.floor(Math.random() * 3),
       ];
-      console.log(`Randomly trying ${move}`);
       validMove = gameBoard.addPiece(move[0], move[1], activePlayer.mark);
       if (validMove) {
         aiMovesMade.push(corners.findIndex((corner) => corner === move));
@@ -230,13 +230,13 @@ const gameController = (() => {
     }
   };
 
+  // Fill in the gap in an interesting line
   const fromLineOfInterest = (lineOfInterest) => {
     let validMove = false;
     while (!validMove) {
       const move = randomFromList(lineOfInterest);
       validMove = gameBoard.addPiece(move[0], move[1], activePlayer.mark);
     }
-    console.log('Interesting line!');
   };
 
   const aiMove = () => {
@@ -277,7 +277,6 @@ const gameController = (() => {
       // Move 5: Go in the free space.
       randomMove();
     }
-    console.log(`${moves} ${gameBoard.getBoard()}`);
     gameBoard.renderBoard();
     won = gameBoard.checkBoardForWin(activePlayer.mark);
     // Not won? Swap the player
