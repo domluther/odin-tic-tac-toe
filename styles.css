@@ -80,7 +80,8 @@ button {
   justify-items: center;
 }
 
-input {
+input,
+select {
   font-size: 2.4rem;
   padding: 0 1rem;
   width: 80%;

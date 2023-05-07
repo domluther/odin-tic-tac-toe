@@ -15,12 +15,17 @@
       <div class="game-content hidden"></div>
       <div class="game-status hidden"></div>
       <form action="" class="game-settings">
+        <label for="mode">Mode</label>
+        <select name="game-mode" id="game-mode">
+          <option value="v-computer">v Computer</option>
+          <option value="two-player">Two player</option>
+        </select>
         <label for="player1Name">Player 1: </label
         ><input
           type="text"
           name="player1Name"
           id="player1Name"
-          placeholder="Bob"
+          placeholder="Sponge"
           maxlength="15"
           required
         />
@@ -30,7 +35,7 @@
           type="text"
           name="player2Name"
           id="player2Name"
-          placeholder="Sponge"
+          placeholder="Bob"
           maxlength="15"
           required
         />
