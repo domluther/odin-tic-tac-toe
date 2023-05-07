@@ -1,7 +1,13 @@
 // A gameboard to store the state of the game
 // in a module as only one will be needed
+const gameContentEle = document.querySelector('.game-content');
+
 const gameBoard = (() => {
   const gameboard = [];
+
+  const getBoard = () => gameboard;
+
+  const getValue = (x, y) => gameboard[x][y];
 
   // Creates base grid
   const createBoard = () => {
@@ -14,6 +20,27 @@ const gameBoard = (() => {
       // Fill that array with blank spaces
       for (let column = 0; column < columns; column += 1) {
         gameboard[row][column] = defaultContent;
+      }
+    }
+  };
+
+  const createSquare = (x, y, mark) => {
+    const divEle = document.createElement('div');
+    divEle.className = 'square';
+    divEle.dataset.x = x;
+    divEle.dataset.y = y;
+    divEle.textContent = mark;
+    return divEle;
+  };
+
+  const renderBoard = () => {
+    // Reset HTML and then create
+    gameContentEle.innerHTML = '';
+    for (let row = 0; row < 3; row += 1) {
+      for (let column = 0; column < 3; column += 1) {
+        gameContentEle.appendChild(
+          createSquare(row, column, getValue(row, column))
+        );
       }
     }
   };
@@ -39,7 +66,7 @@ const gameBoard = (() => {
     return res === 3;
   };
 
-  // Check all
+  // Are there any wins?
   const checkBoardForWin = (mark) => {
     // The 8 winning lines in noughts and crosses
     const winningLines = [
@@ -97,27 +124,63 @@ const gameBoard = (() => {
 
   // Init the board
   createBoard();
-  addPiece(2, 0, 'x');
-  addPiece(2, 1, 'x');
-  addPiece(2, 2, 'x');
-  checkBoardForWin('x');
-  return { gameboard, addPiece };
+  return { getBoard, addPiece, checkBoardForWin, renderBoard };
 })();
-
-const displayController = () => {};
 
 const Player = (name, desiredMark) => {
   const playerName = name;
   const mark = desiredMark;
+  return { playerName, mark };
 };
 
-/*
-Gameplay loop
+const players = [Player('bob', 'x'), Player('sponge', 'o')];
 
-Set starting player
-while there's space available (not 9 moves?) & no one has won
-  ask player to move
-  place move if possible
-  check if they've won
-  swap player
-*/
+const gameController = (() => {
+  gameBoard.renderBoard();
+  let moves = 0;
+  // Set starting player
+  let activePlayerId = 0;
+  let activePlayer = players[activePlayerId];
+  let won = false;
+
+  const updateStatus = (message) => {
+    const gameStatusEle = document.querySelector('.game-status');
+    gameStatusEle.textContent = message;
+  };
+
+  const tryToMove = (e) => {
+    // Did they click a square?
+    const currentSquare = e.target.closest('.square');
+    if (!currentSquare) return;
+    // Get the coords of the square
+    const { x, y } = e.target.dataset;
+    // Try to add a piece
+    const validMove = gameBoard.addPiece(x, y, activePlayer.mark);
+    if (validMove) {
+      gameBoard.renderBoard();
+      won = gameBoard.checkBoardForWin(activePlayer.mark);
+      if (!won) {
+        activePlayerId = activePlayerId === 1 ? 0 : 1;
+        activePlayer = players[activePlayerId];
+        moves += 1;
+        if (moves < 9) {
+          updateStatus(`${activePlayer.playerName}'s turn`);
+        } else {
+          updateStatus('A draw');
+        }
+      }
+      if (won) {
+        updateStatus(`${activePlayer.playerName} wins!`);
+        gameContentEle.removeEventListener('click', tryToMove);
+      }
+    }
+  };
+
+  const start = () => {
+    gameContentEle.addEventListener('click', tryToMove);
+    updateStatus(`${activePlayer.playerName}'s turn`);
+  };
+  return { start };
+})();
+
+gameController.start();
