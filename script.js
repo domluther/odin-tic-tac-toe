@@ -1,6 +1,7 @@
 // A gameboard to store the state of the game
 // in a module as only one will be needed
 const gameContentEle = document.querySelector('.game-content');
+const restartBtn = document.querySelector('.restart-btn');
 
 const gameBoard = (() => {
   const gameboard = [];
@@ -22,6 +23,13 @@ const gameBoard = (() => {
         gameboard[row][column] = defaultContent;
       }
     }
+  };
+
+  const resetBoard = () => {
+    gameboard.pop();
+    gameboard.pop();
+    gameboard.pop();
+    createBoard();
   };
 
   const createSquare = (x, y, mark) => {
@@ -124,7 +132,7 @@ const gameBoard = (() => {
 
   // Init the board
   createBoard();
-  return { getBoard, addPiece, checkBoardForWin, renderBoard };
+  return { getBoard, addPiece, checkBoardForWin, renderBoard, resetBoard };
 })();
 
 const Player = (name, desiredMark) => {
@@ -133,15 +141,15 @@ const Player = (name, desiredMark) => {
   return { playerName, mark };
 };
 
-const players = [Player('bob', 'x'), Player('sponge', 'o')];
+const players = [Player('Bob', 'x'), Player('Sponge', 'o')];
 
 const gameController = (() => {
-  gameBoard.renderBoard();
-  let moves = 0;
-  // Set starting player
-  let activePlayerId = 0;
-  let activePlayer = players[activePlayerId];
-  let won = false;
+  // State variables needed for the game
+  let moves;
+  const maxMoves = 9;
+  let activePlayerId;
+  let activePlayer;
+  let won;
 
   const updateStatus = (message) => {
     const gameStatusEle = document.querySelector('.game-status');
@@ -159,11 +167,13 @@ const gameController = (() => {
     if (validMove) {
       gameBoard.renderBoard();
       won = gameBoard.checkBoardForWin(activePlayer.mark);
+      // Not won? Swap the player
       if (!won) {
         activePlayerId = activePlayerId === 1 ? 0 : 1;
         activePlayer = players[activePlayerId];
         moves += 1;
-        if (moves < 9) {
+        // Is it game over? (board full)
+        if (moves < maxMoves) {
           updateStatus(`${activePlayer.playerName}'s turn`);
         } else {
           updateStatus('A draw');
@@ -177,10 +187,23 @@ const gameController = (() => {
   };
 
   const start = () => {
+    gameContentEle.removeEventListener('click', tryToMove);
+    moves = 0;
+    won = false;
+    activePlayerId = 0;
+    activePlayer = players[activePlayerId];
     gameContentEle.addEventListener('click', tryToMove);
     updateStatus(`${activePlayer.playerName}'s turn`);
   };
   return { start };
 })();
 
-gameController.start();
+const init = () => {
+  gameBoard.resetBoard();
+  gameBoard.renderBoard();
+  gameController.start();
+};
+
+restartBtn.addEventListener('click', init);
+
+init();
